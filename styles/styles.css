@@ -1,0 +1,57 @@
+html{
+	color:#B8A48C;
+}
+body{
+	background-color:#4B5957;
+}
+
+.container{
+	background-color:#4B5957;	
+}
+
+.picContainer{
+	background-color:#B8A48C;
+	height:400px;
+	border-style:inset;
+	border-width:7px;
+	border-color:#B8A48C;
+}
+
+.displayPic{
+	height:300px;
+	padding:50px;
+	vertical-align:middle;
+	margin:auto;
+	display:block;	
+}
+
+.displayText{
+	height:400px;
+	background-color:#B8A48C;
+	border-style:inset;
+	border-width:7px;
+	border-color:#B8A48C;
+}
+
+.submitButton{
+	width:100%;
+}
+
+.descriptionText{
+	font-size:20px;
+}
+h1{
+	font-size:50px;
+	color:red;
+	text-decoration:underline;
+	text-decoration-color:red;
+}
+.centerText{
+	text-align:center;
+	
+}
+@font-face{
+	
+	font-family: Dungeon;
+	src:url('DUNGRG_.TFF');
+}
