@@ -1,25 +1,118 @@
 'use strict'
-$(document).ready(function(){
 
- var functionNumber=1;
- getTextInput("Welcome to Dungeon! press enter to begin","Dungeon!");
-	
-//characterCreation();
+$(document).ready(function(){ 
+ 
+ displayText("Welcome to Dungeon! press enter to begin","Dungeon!");
+ clearTextField();
+ waitForInput (0,createCharacterObject(),false);
 
-function displayText(description,title){
-	
-	displayTitleText(title);
-	displayDescriptionText(description);
-	
-	getInput();
+function functionSelector(input,switchNumber,character){
+	var characterResult = character;
+	console.log(characterResult);
+/*	switch (switchNumber){
+		
+		case 1:
+			displayText("What would you like to name yourself?","Name");
+			waitForInput();
+			break;
+		case 2:
+			characterResult.name= input;
+			clearPage();
+			displayTitleText("Choose your class");
+			displayList("Adventurer(Pretty good at everything)", "Brute(MOAR STRENGTH! NO TALK)","Spy(an international man/woman of mystery)","Troll(Hue Hue Hue)");
+			waitForInput(1,characterResult);
+			break;
+		case 3:
+			characterResult.classType= getClassType(input);
+			clearPage();
+			displayTitleText("Choose a emphesis");
+			displayList("Strength", "dexterity","charisma","luck");
+			waitForInput(2,characterResult);
+			break;		
+		case 4:
+			characterResult.emphesis= getEmphesis(input);
+			let characterResult = characterGenerator(characterResult.emphesis,characterResult.classType);
+			if(reRollCharacter(characterResult)){
+				let characterResult = characterGenerator(characterResult.emphesis,characterResult.classType);
+			}
+			functionNumber++;
+			break;
+		
+	}*/
+
+	if(switchNumber===1){
+		displayText("What would you like to name yourself?","Name");
+		displayTextField();
+		waitForInput(1,characterResult,false);
+	}
+	if(switchNumber===2){
+		characterResult.name= input;
+		clearPage();
+		displayTitleText("Choose your class");
+		displayList("Adventurer(Pretty good at everything)", "Brute(MOAR STRENGTH! NO TALK)","Spy(an international man/woman of mystery)","Troll(Hue Hue Hue)");
+		waitForInput(2,characterResult,false);		
+	}
+	if(switchNumber===3){
+		characterResult.classType= getClassType(input);
+		clearPage();
+		displayTitleText("Choose a emphesis");
+		displayList("Strength", "dexterity","charisma","luck");
+		waitForInput(3,characterResult,false);		
+	}
+	if(switchNumber===4){
+		characterResult.emphesis= getEmphesis(input);
+		clearPage();
+		characterResult = characterGenerator(characterResult.emphesis,characterResult.classType,character);
+		displayCharacterInfo(characterResult);
+		displayText("Would you like to reroll your character? (You only get one reroll)","Confirm");
+		displayList("Yes","No");
+		waitForInput(4,characterResult,false);	
+	}	
+	if(switchNumber===5){
+		if(parseInt(input===1)){
+			clearPage();
+			clearTextField();
+			characterResult = characterGenerator(characterResult.emphesis,characterResult.classType,character);
+			displayCharacterInfo(characterResult);
+		}
+		else{
+			clearPage();
+			clearTextField();
+		}
+		displayText("press enter to continue","Final Character");
+		waitForInput(5,characterResult);
+	}
+
 }
 
-function getInput(){
+function createCharacterObject(){
 	
+	var character = {
+		name: "",
+		classType: "",
+		emphesis: "",
+		hp: "",
+		strength: "",
+		dexterity: "",
+		charisma: "",
+		luck: ""
+		//inventory = [];
+	};
+	
+	return character;
+	
+}
+
+function waitForInput(switchNumber,character,ranOnce){
 	$("#submitButton").on("click",function(){
-		functionSelector(dataValidation($("#input").text()));
+		if(ranOnce===false){
+			ranOnce=true;	
+			switchNumber++;
+			functionSelector($("#input").val(),switchNumber,character);
+		}
 	});	
 }
+
 function dataValidation(data,message){
 /*	
 	if(Number.isInteger(parseInt(data)) && parseInt(data)>0 && parseInt(data)<5){
@@ -30,6 +123,15 @@ function dataValidation(data,message){
 		getUserInput(message,title);
 	}
 */
+
+
+}
+
+function displayText(description,title){
+	
+	displayTitleText(title);
+	displayDescriptionText(description);
+	
 }
 
 function displayTitleText(title){
@@ -37,16 +139,15 @@ function displayTitleText(title){
 	$(".encounterTitle").text(title);
 }
 
+function displayTextField(){
+	
+	$('#textField').append('<input type="text" class="form-control" id="input">');
+}
+
 function displayDescriptionText(description){
 	
 	$(".descriptionText").text(description);
 }
-function RNG(UpperBound,lowerBound){
-	
-	return (Math.floor(Math.random()*parseInt(upperBound))+lowerBound);
-	
-}
-
 
 function displayList(item1,item2,item3,item4,seed){
 	
@@ -57,17 +158,27 @@ function displayList(item1,item2,item3,item4,seed){
 			$("#listOfOptions").append("<li>"+itemArray[i]+"</li>");	
 		}
 	}
-	
-	getInput();
-	
 }
 
+function displayCharacterInfo(character){
+	
+	$("#characterStats").text("Name: "+character.name+"\nHP: "+character.hp+
+	"\nStrength: "+character.strength+"\nDexteriry: "+character.dexterity+
+	"\nCharisma: "+character.charisma+"\nluck: "+character.luck);
+	
+	//getInventory(character);
+}
 
 function clearPage(){
 	clearDescription();
 	clearInput();
 	clearList();
 	clearTitle();
+}
+
+function clearTextField(){
+	
+	$('#textField').empty();	
 }
 
 function clearTitle(){
@@ -89,155 +200,104 @@ function clearList(){
 
 }
 
-function functionSelector(input){
+function getEmphesis(userChoice){
 	
-	clearPage();
-	
-	switch (functionNumber){
+	if(userChoice!==undefined){
 		
-		case 1:
-			getTextInput("What would you like to name yourself?","Name");
-			let name = getInput();
-			functionNumber++;
-			break;
-		case 2:
-			let classType = getClassType();	
-			functionNumber++;
-			break;
-		case 3:
-			let strength = getStrength();
-			functionNumber++;
-			break;		
-		case 4:
-			let character = characterGenerator(strength,classType,name);
-			if(reRollCharacter(character)){
-				let character = characterGenerator(strength,classType,name);
-			}
-			functionNumber++;
-			break;
+		if (parseInt(userChoice)===1){
+			return "strength";
+		}
+		if (parseInt(userChoice)===2){
+			return "dexterity";		
+		}
+		if (parseInt(userChoice)===3){
+			return "charisma";
+		}
+		if (parseInt(userChoice)===4){
+			return "luck"
+		}
+	}
+}
+
+function getClassType(userChoice){
+	
+	if(userChoice!==undefined){
 		
+		if (parseInt(userChoice)===1){
+			return "adventurer";
+		}
+		if (parseInt(userChoice)===2){
+			return "brute";		
+		}
+		if (parseInt(userChoice)===3){
+			return "spy";
+		}
+		if (parseInt(userChoice)===4){
+			return "troll"
+		}
+	
 	}
 }
 
-function getStrength(){
+function RNG(upperBound,lowerBound){
 	
-	let strength = displayList("strength(how much damage you do)","dexterity(how often you dodge)","Charisma(effects shop prices and gives more dialog options)","luck(How often you get a critical hit)");
-	getInput();
-	if (strength===1){
-		return "strength";
-	}
-	if (strength===2){
-		return "dexterity";		
-	}
-	if (strength===3){
-		return "charisma";
-	}
-	if (strength===4){
-		return "luck"
-	}
-}
-
-function getClassType(){
-	
-	let classType= displayList("Adventurer(Pretty good at everything)", "Brute(MOAR STRENGTH! NO TALK)","Spy(an international man/woman of mystery)","Troll(Hue Hue Hue)");
-	getInput();
-	
-	if (classType===1){
-		return "adventurer";
-	}
-	if (classType===2){
-		return "brute";		
-	}
-	if (classType===3){
-		return "spy";
-	}
-	if (classType===4){
-		return "troll"
-	}
+	return ((Math.floor(Math.random()*parseInt(upperBound))+1)+lowerBound);
 	
 }
 
-function characterGenerator(strength,classType,title){
+function characterGenerator(emphesis,classType,character){
 	
 	if(classType==="adventurer"){
-		let character = {
-			name: title,
-			hp: RNG(20,13),
-			strength: RNG(20,4),
-			dexterity: RNG(20,4),
-			charisma: RNG(20,4),
-			luck: RNG(10,3)
-			//inventory = ["Healing herb","key"];
-		};
+		character.hp= RNG(20,13);
+		character.strength= RNG(20,4);
+		character.dexterity= RNG(20,4);
+		character.charisma= RNG(20,4);
+		character.luck= RNG(10,3);
+		//character.inventory = ["Healing herb","key"];
 	}
 	else if(classType==="brute"){
-		let character = {
-			name: title,
-			hp: RNG(25,13),
-			strength: RNG(25,15),
-			dexterity: RNG(20,1),
-			charisma: RNG(5,1),
-			luck: RNG(10,1)
-			//inventory = [];
-		}
+		character.hp= RNG(25,13);
+		character.strength= RNG(25,15);
+		character.dexterity= RNG(20,1);
+		character.charisma= RNG(5,1);
+		character.luck= RNG(10,1);
+		//character.inventory = [];
 	}
 	else if(classType==="spy"){
-		let character = {
-			name: title,
-			hp:RNG(15,10),
-			strength: RNG(12,6),
-			dexterity: RNG(25,5),
-			charisma: RNG(20,15),
-			luck: RNG(12,4)
-			//inventory["key"];
-		}
+		character.hp= RNG(15,10);
+		character.strength= RNG(12,6);
+		character.dexterity= RNG(25,5);
+		character.charisma= RNG(20,15);
+		character.luck= RNG(12,4);
+		//character.inventory["key"];
 	}
 	else if(classType==="troll"){
-		let character = {
-			name: title,
-			hp: RNG(20,1),
-			strength: RNG(20,1),
-			dexterity: RNG(20,1),
-			charisma: RNG(20,1),
-			luck: RNG(20,1)
-			//inventory[];
-		}		
+		character.hp= RNG(20,1);
+		character.strength= RNG(20,1);
+		character.dexterity= RNG(20,1);
+		character.charisma= RNG(20,1);
+		character.luck= RNG(20,1);
+		//character.inventory[];		
 	}
 	
-	return applyStrengths(character,strength);
+	return applyStrengths(character,emphesis);
 }
-function applyStrengths(character,strength){
+function applyStrengths(character,emphesis){
 		
-	if(strength==="strength"){
+	if(emphesis==="strength"){
 		character.strength +=5;
 	}
-	else if(strength==="dexterity"){
+	else if(emphesis==="dexterity"){
 		character.dexterity +=5;
 	}
-	else if(strength==="charisma"){
+	else if(emphesis==="charisma"){
 		character.charisma +=5;
 	}
-	else if(strength==="luck"){
+	else if(emphesis==="luck"){
 		character.luck +=5;
 	}
 		
 	return character;
-}
-
-function reRollCharacter(character){
-	
-	displayCharacterInfo(character);
-	
-	return getUserInput("Would you like to reroll your character?\n1.Yes\n2.No;",Confirm);
-}
-
-function displayCharacterInfo(character){
-	
-	$("#descriptionText").text("Name: "+character.name+"\nHP: "+character.hp+
-	"\nStrength: "+character.strength+"\nDexteriry: "+character.dexterity+
-	"\nCharisma: "+character.charisma+"\nluck: "+character.luck+"\nInventory");
-	
-	//getInventory(character);
 }
 
 function getInventory(character){}
