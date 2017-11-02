@@ -4,7 +4,8 @@ $(document).ready(function(){
  
  displayText("Welcome to Dungeon! press enter to begin","Dungeon!");
  clearTextField();
- waitForInput (0,createCharacterObject(),false);
+ displayPicture("../images/skeleton.jpg");
+ waitForInput (5,createCharacterObject(),false);
 
 function functionSelector(input,switchNumber,character){
 	var characterResult = character;
@@ -69,7 +70,7 @@ function functionSelector(input,switchNumber,character){
 		waitForInput(4,characterResult,false);	
 	}	
 	if(switchNumber===5){
-		if(parseInt(input===1)){
+		if(input==="1"){
 			clearPage();
 			clearTextField();
 			characterResult = characterGenerator(characterResult.emphesis,characterResult.classType,character);
@@ -80,7 +81,15 @@ function functionSelector(input,switchNumber,character){
 			clearTextField();
 		}
 		displayText("press enter to continue","Final Character");
-		waitForInput(5,characterResult);
+		waitForInput(5,characterResult,false);
+	}
+	if(switchNumber===6){
+		clearPage();
+		let dungeon = createDungeon();
+		console.log(dungeon[0][0]);
+		displayDungeon(dungeon,5);
+		
+		waitForInput(6,characterResult,false);
 	}
 
 }
@@ -91,7 +100,8 @@ function createCharacterObject(){
 		name: "",
 		classType: "",
 		emphesis: "",
-		hp: "",
+		currentHP:"",
+		totalHP: "",
 		strength: "",
 		dexterity: "",
 		charisma: "",
@@ -125,6 +135,9 @@ function dataValidation(data,message){
 */
 
 
+}
+function displayPicture(imageAdress){
+        $('#displayPicture').attr('src',imageAdress);	
 }
 
 function displayText(description,title){
@@ -162,7 +175,7 @@ function displayList(item1,item2,item3,item4,seed){
 
 function displayCharacterInfo(character){
 	
-	$("#characterStats").text("Name: "+character.name+"\nHP: "+character.hp+
+	$("#characterStats").text("Name: "+character.name+"\nHP: "+character.currentHP+"/"+character.totalHP+
 	"\nStrength: "+character.strength+"\nDexteriry: "+character.dexterity+
 	"\nCharisma: "+character.charisma+"\nluck: "+character.luck);
 	
@@ -248,7 +261,8 @@ function RNG(upperBound,lowerBound){
 function characterGenerator(emphesis,classType,character){
 	
 	if(classType==="adventurer"){
-		character.hp= RNG(20,13);
+		character.totalHP= RNG(20,13);
+		character.currentHP = character.totalHP;
 		character.strength= RNG(20,4);
 		character.dexterity= RNG(20,4);
 		character.charisma= RNG(20,4);
@@ -256,7 +270,8 @@ function characterGenerator(emphesis,classType,character){
 		//character.inventory = ["Healing herb","key"];
 	}
 	else if(classType==="brute"){
-		character.hp= RNG(25,13);
+		character.totalHP= RNG(25,13);
+		character.currentHP =  character.totalHP;
 		character.strength= RNG(25,15);
 		character.dexterity= RNG(20,1);
 		character.charisma= RNG(5,1);
@@ -264,7 +279,8 @@ function characterGenerator(emphesis,classType,character){
 		//character.inventory = [];
 	}
 	else if(classType==="spy"){
-		character.hp= RNG(15,10);
+		character.totalHP= RNG(15,10);
+		character.currentHP =  character.totalHP;
 		character.strength= RNG(12,6);
 		character.dexterity= RNG(25,5);
 		character.charisma= RNG(20,15);
@@ -272,7 +288,8 @@ function characterGenerator(emphesis,classType,character){
 		//character.inventory["key"];
 	}
 	else if(classType==="troll"){
-		character.hp= RNG(20,1);
+		character.totalHP= RNG(20,1);
+		character.currentHP =  character.totalHP;		
 		character.strength= RNG(20,1);
 		character.dexterity= RNG(20,1);
 		character.charisma= RNG(20,1);
@@ -301,4 +318,38 @@ function applyStrengths(character,emphesis){
 }
 
 function getInventory(character){}
+
+
+function createDungeon(){
+	
+	let dungeonSize=5;
+	
+	let dungeon = [[],[],[],[],[]];
+	
+	for(let i=0;i<dungeonSize;i++){
+		for(let j=0;j<dungeonSize;j++){
+			
+			dungeon[i][j] = {visited: false, value: RNG(6,1)};
+		}
+	}
+	
+	return dungeon;
+}
+
+
+function displayDungeon(dungeon,dungeonSize){
+	let dungeonDisplay="<table>";
+	for(let i=0;i<dungeonSize;i++){
+		dungeonDisplay += "<tr>"
+		for(let j=0;j<dungeonSize;j++){
+			if(dungeon.visited){
+				dungeonDisplay+="<td>"+dungeon[i][j].value+"</td>";
+			}
+		}
+		dungeonDisplay+="</tr>";
+	}
+	dungeonDisplay+="</table>";
+	
+	$("#displayMap").append(dungeonDisplay);
+}
 });
