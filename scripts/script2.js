@@ -7,7 +7,7 @@ $(document).ready(function(){
  displayPicture("../images/skeleton.jpg");
  waitForInput (5,createCharacterObject(),false);
 
-function functionSelector(input,switchNumber,character,currentCoordinate,dungeon){
+function functionSelector(input,switchNumber,character){
 	var characterResult = character;
 
 	if(switchNumber===1){
@@ -54,30 +54,41 @@ function functionSelector(input,switchNumber,character,currentCoordinate,dungeon
 	}
 	if(switchNumber===6){
 		clearPage();
-		let dungeon = createDungeon();
-		currentCoordinate= setStartingTile(dungeon);
-		displayDungeon(dungeon);
-		displayTitleText("Where would you like to go?");
-		displayList("Up","Down","Left","Right");
-		displayTextField();
-		waitForInput(6,characterResult,false,currentCoordinate,dungeon);
+		displayText("Your adventure begins with you walking down a winding road ending at a fork in the road. On your left you see a small village in the distance with many people gathered near the center. On your right you see a mountainous path with a small pillar of smoke based on the top of the mountain. Which path do you choose?","");
+		displayList("left (village)","right (mountain)");
+		waitForInput(6,characterResult,false);
 	}
 	if(switchNumber===7){
-		if(validMove(dungeon,currentCoordinate,input)){
-			clearPage();
-			currentCoordinate= move(dungeon,currentCoordinate,input);
-//			playEvent(dungeon[currentCoordinate[0]][currentCoordinate[1]].value);
-//			waitForInput(,characterResult,false);
+		if(input==="1"){
+			displayText("You enter the village and find that the annual Harvet Fest is occuring. There are plenty of stands with many different wares to purchase. Do you...","Harvest Fest");
+			displayList("visit the fortune telling tent?","See what is going on with the large crowd near you?","Investigate the dark alley");
+			waitForInput(7,characterResult,false)
 		}
-		
-		
+		if(input==="2"){//mountain 1
+			displayText()
+			
+		}
 	}
-	//battle case
-	if(switchNumber===20){
-		
-		
+	if(switchNumber===8){
+		if(input==="1"){
+			displayText('"Hello Travler" Says the fourtune Teller in a raspy voice."Would you like to have your fortune told or possibly something else...?"',"Fortune Teller");
+			displayList("Ask for your fortune","Inquire about 'something else'");
+			waitForInput(8,characterResult,false);
+		}
 	}
-
+	if(switchNumber===8){
+		if(input==="1"){
+			displayText('"I see great fortune in your 
+			displayList("Ask for your fortune","Inquire about 'something else'");
+			waitForInput(8,characterResult,false);
+		}
+		if(input==="2"){
+			displayText("Well I happened to have some experimental magic I've been just dying to test on a willing user. It will give you unimaginable power for a price, that is, if you are interested...");
+			displayList("Accept the offer","Decline the offer");
+			waitForInput(10,characterResult,false);
+		}
+	}
+	
 }
 
 function createCharacterObject(){
@@ -311,103 +322,4 @@ function applyStrengths(character,emphesis){
 
 function getInventory(character){}
 
-
-function createDungeon(){
-	
-	let dungeonSize=5;
-	
-	let dungeon = [[],[],[],[],[]];
-	
-	for(let i=0;i<dungeonSize;i++){
-		for(let j=0;j<dungeonSize;j++){
-			
-			dungeon[i][j] = {visited: false, value: convertTileValue(RNG(5,1))};
-		}
-	}
-	
-	return dungeon;
-}
-
-function convertTileValue(tileValue){
-	
-	if(tileValue===1){
-		return "empty";
-	}
-	else if(tileValue===2){
-		return "pit";
-	}
-	else if(tileValue===3){
-		return "skeleton";
-	}
-/*	else if(tileValue===4){
-		return "encounter";
-	}*/
-	else if(tileValue===4){
-		return "dragon";
-	}
-	
-	
-}
-
-function setStartingTile(dungeon){
-	
-	let currentCoordinate = [];
-	
-	currentCoordinate[0]=(dungeon.length-1);
-	currentCoordinate[1]=0;	
-	dungeon[(dungeon.length-1)][0].value="empty";
-	dungeon[(dungeon.length-1)][0].visited=true;
-	
-	return currentCoordinate;
-}
-
-function setExitTile(dungeon){
-	
-	dungeon[RNG((dungeonLength-1),1)][RNG((dungeonLength-1),1)].value="exit";	
-	
-}
-
-function displayDungeon(dungeon,dungeonSize){
-	let dungeonDisplay="<table>";
-	for(let i=0;i<dungeonSize;i++){
-		dungeonDisplay += "<tr>"
-		for(let j=0;j<dungeonSize;j++){
-			if(dungeon.visited){
-				dungeonDisplay+="<td>"+dungeon[i][j].value[0]+"</td>";
-			}
-		}
-		dungeonDisplay+="</tr>";
-	}
-	dungeonDisplay+="</table>";
-	
-	$("#displayMap").append(dungeonDisplay);
-}
-
-function validMove(dungeon,currentCoordinate,input){
-	
-	if(input==="1"&&currentCoordinate[0]===0){
-		return false;
-	}
-	if(input==="2"&&currentCoordinate[0]===(dungeon.length-1)){
-		return false;
-	}
-	if(input==="3"&&currentCoordinate[1]===0){
-		return false;
-	}	
-	if(input==="4"&&currentCoordinate[1]===(dungeon.length-1)){
-		return false;
-	}
-	
-	return true;
-}
-
-function movePlayer(currentCoordinate,input){
-	
-	if(input==="1"){currentCoordinate[0]++;}
-	else if(input==="2"){currentCoordinate[0]--;}
-	else if(input==="3"){currentCoordinate[1]--;}	
-	else if(input==="4"){currentCoordinate[1]++;}		
-		
-	return currentCoordinate;
-}
 });
